@@ -54,31 +54,27 @@ El proyecto se encuentra estructurado de forma modular para facilitar su manteni
 
 ## ⚙️ Instalación y Ejecución
 
-Para evaluar la aplicación en un entorno local, sigue estos pasos en orden:
+El proyecto incluye un archivo `docker-compose.yaml` que orquesta la Base de Datos, el Backend y el Frontend de manera automatizada. 
 
-### 1. Base de Datos (Docker)
-Navega a la carpeta `/database` y ejecuta los siguientes comandos para crear y levantar el contenedor con el esquema preconfigurado:
+Para evaluar la aplicación en un entorno local, asegúrate de tener Docker Desktop ejecutándose y sigue estos pasos:
 
-    docker build -t mysql-db .
-    docker run -d -p 3306:3306 --name bd-veterinaria -e MYSQL_DATABASE=mydatabase -e MYSQL_USER=myuser -e MYSQL_PASSWORD=password -e MYSQL_ROOT_PASSWORD=rootpassword mysql-db
+### Despliegue Automatizado
+Abre una terminal en la raíz del proyecto (donde se encuentra el archivo `docker-compose.yaml`) y ejecuta el siguiente comando:
 
-### 2. Despliegue del Backend
-Navega a la carpeta `/backend` y levanta el servicio API (se ejecutará en el puerto 8080):
+    docker-compose up -d --build
 
-    ./mvnw spring-boot:run
+Este comando se encargará de:
+1. Levantar el contenedor de **MySQL 8.0** en el puerto `3306` e inyectar el script de datos iniciales.
+2. Construir y levantar el contenedor del **Backend** en el puerto `8080`.
+3. Construir y levantar el contenedor del **Frontend** en el puerto `8081`.
 
-*(Nota en Windows: Utilizar `.\mvnw.cmd spring-boot:run`)*
+### Accesos
+Una vez que los contenedores estén en estado *healthy*, accede a la aplicación a través de tu navegador en:
 
-### 3. Despliegue del Frontend
-Abre una nueva terminal, navega a la carpeta `/frontend` y levanta el servicio de vistas (se ejecutará en el puerto 8081 para evitar conflictos):
+* **Frontend (Interfaz Gráfica):** `http://localhost:8081`
+* **Backend (API REST):** `http://localhost:8080`
 
-    ./mvnw spring-boot:run
-
-Accede a la aplicación a través de tu navegador en: `http://localhost:8081`
-
-### 4. Ejecución de Pruebas y Reportes de Cobertura
-Para validar la calidad del código y generar los informes de JaCoCo en cualquiera de las capas, ejecuta:
+### Ejecución Manual y Reportes de Cobertura (Opcional)
+Si deseas levantar los servicios manualmente usando Maven o generar los informes de JaCoCo, puedes abrir una terminal en la carpeta `/backend` o `/frontend` y ejecutar:
 
     ./mvnw clean test jacoco:report
-
-*Los reportes detallados podrán ser visualizados abriendo el archivo `/target/site/jacoco/index.html`.*
